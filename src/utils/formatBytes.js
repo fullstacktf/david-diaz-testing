@@ -1,5 +1,3 @@
-const { format } = require("prettier");
-
 function formatBytes(value) {
   let gigas = "0";
   let megas = "0";
@@ -9,21 +7,16 @@ function formatBytes(value) {
   } else if (value < 1000000) {
     megas = getMegas(value);
     gigas = getGigasAndTeras(value);
-    checkMegasBiggerThanCero(megas);
+    megas = checkTripleCeroValues(megas);
     return gigas + "GB " + megas + "MB";
   } else if (value > 1000000) {
     megas = getMegas(value);
     gigas = getGigasAndTeras(value);
     teras = getGigasAndTeras(gigas);
-    checkMegasBiggerThanCero(megas);
-    return (
-      teras +
-      "TB " +
-      gigas.substring(teras.length, gigas.length) +
-      "GB " +
-      megas +
-      "MB"
-    );
+    megas = checkTripleCeroValues(megas);
+    gigas = checkTripleCeroValues(gigas.substring(teras.length, gigas.length));
+
+    return teras + "TB " + gigas + "GB " + megas + "MB";
   }
 }
 
@@ -37,11 +30,11 @@ const getGigasAndTeras = (megaBytes) => {
   return gigas;
 };
 
-const checkMegasBiggerThanCero = (megas) => {
-  if (megas === "000" || megas === "00") {
-    megas = "0";
+const checkTripleCeroValues = (value) => {
+  if (value === "000" || value === "00") {
+    value = "0";
   }
-  return megas;
+  return value;
 };
 
 module.exports = formatBytes;
